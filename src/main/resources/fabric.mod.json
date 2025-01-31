@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "weight",
+  "version": "${version}",
+  "name": "Weight",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/weight/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "com.bridging.weight.Weight"
+    ]
+  },
+  "mixins": [
+    "weight.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

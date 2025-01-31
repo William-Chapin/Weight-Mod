@@ -1,0 +1,84 @@
+{
+  "itemWeights": [
+    {
+      "item": "netherite",
+      "percent": 0.003
+    },
+    {
+      "item": "netherite_helmet",
+      "percent": 0.025
+    },
+    {
+      "item": "netherite_chestplate",
+      "percent": 0.04
+    },
+    {
+      "item": "netherite_leggings",
+      "percent": 0.035
+    },
+    {
+      "item": "netherite_boots",
+      "percent": 0.02
+    },
+    {
+      "item": "netherite_sword",
+      "percent": 0.01
+    },
+    {
+      "item": "netherite_hoe",
+      "percent": 0.01
+    },
+    {
+      "item": "netherite_axe",
+      "percent": 0.015
+    },
+    {
+      "item": "netherite_pickaxe",
+      "percent": 0.015
+    },
+    {
+      "item": "netherite_shovel",
+      "percent": 0.005
+    },
+    {
+      "item": "diamond",
+      "percent": 0.003
+    },
+    {
+      "item": "diamond_helmet",
+      "percent": 0.015
+    },
+    {
+      "item": "diamond_chestplate",
+      "percent": 0.024
+    },
+    {
+      "item": "diamond_leggings",
+      "percent": 0.021
+    },
+    {
+      "item": "diamond_boots",
+      "percent": 0.012
+    },
+    {
+      "item": "diamond_sword",
+      "percent": 0.006
+    },
+    {
+      "item": "diamond_hoe",
+      "percent": 0.006
+    },
+    {
+      "item": "diamond_axe",
+      "percent": 0.009
+    },
+    {
+      "item": "diamond_pickaxe",
+      "percent": 0.009
+    },
+    {
+      "item": "diamond_shovel",
+      "percent": 0.003
+    }
+  ]
+}
