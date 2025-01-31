@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,11 +20,7 @@ public class ConfigManager {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CONFIG_FILE_PATH = "mods/weight/configuration.properties";
     private static final String WEIGHT_FILE_PATH = "mods/weight/weights.json";
-    private static final List<String> REQUIRED_PROPERTIES = Arrays.asList(
-            "slownessMultiplier", "includeEquipped", "maxWeight", "armorWeight", "toolWeight", "defaultWeight",
-            "actionBar", "weatherSlowdown", "weatherWeight", "netherSlowdown", "netherWeight", "breakingSpeed",
-            "fallDamage", "fallDamageWeight", "creativeSlowdown"
-    );
+    private static final List<String> REQUIRED_PROPERTIES = Arrays.asList("slownessMultiplier", "includeEquipped", "maxWeight", "armorWeight", "toolWeight", "defaultWeight", "actionBar", "weatherSlowdown", "weatherWeight", "netherSlowdown", "netherWeight", "breakingSpeed", "fallDamage", "fallDamageWeight", "creativeSlowdown", "chatMessages");
 
     private static ConfigManager instance;
 
@@ -33,18 +30,18 @@ public class ConfigManager {
 
 
     // Constructor
-    private ConfigManager(){
-        try{
+    private ConfigManager() {
+        try {
             initializeFiles();
             loadConfig();
             loadWeights();
-        } catch (IOException | IllegalArgumentException e){
-            LOGGER.error(new Weight().messagePrefix + "Failed to load configuration: " + e.getMessage() + ".");
+        } catch (IOException | IllegalArgumentException e) {
+            LOGGER.error(Weight.messagePrefix + "Failed to load configuration: " + e.getMessage() + ".");
         }
     }
 
-    public static ConfigManager getInstance(){
-        if (instance == null){
+    public static ConfigManager getInstance() {
+        if (instance == null) {
             instance = new ConfigManager();
         }
         return instance;
@@ -57,14 +54,14 @@ public class ConfigManager {
 
     private void createFileIfNotExists(String filePath, String defaultFilePath) throws IOException {
         Path path = Paths.get(filePath);
-        if (Files.notExists(path)){
-            try (InputStream defaultStream = getClass().getClassLoader().getResourceAsStream(defaultFilePath)){
-                if (defaultFilePath == null){
-                    throw new FileNotFoundException(new Weight().messagePrefix + "Default file not found.");
+        if (Files.notExists(path)) {
+            try (InputStream defaultStream = getClass().getClassLoader().getResourceAsStream(defaultFilePath)) {
+                if (defaultFilePath == null) {
+                    throw new FileNotFoundException(Weight.messagePrefix + "Default file not found.");
                 }
                 Files.createDirectories(path.getParent());
                 Files.copy(defaultStream, path);
-                LOGGER.info(new Weight().messagePrefix + "Generated a default file.");
+                LOGGER.info(Weight.messagePrefix + "Generated a default file.");
             }
         }
     }
@@ -74,15 +71,15 @@ public class ConfigManager {
             loadConfig();
             loadWeights();
         } catch (IOException e) {
-            LOGGER.error(new Weight().messagePrefix + "Failed to reload configuration file.");
+            LOGGER.error(Weight.messagePrefix + "Failed to reload configuration file.");
         } catch (IllegalStateException e) {
-            LOGGER.error(new Weight().messagePrefix + "Invalid configuration file.");
+            LOGGER.error(Weight.messagePrefix + "Invalid configuration file.");
         }
     }
 
     // Load configuration file
     public void loadConfig() throws IOException {
-        try (InputStream configStream = Files.newInputStream(Paths.get(CONFIG_FILE_PATH))){
+        try (InputStream configStream = Files.newInputStream(Paths.get(CONFIG_FILE_PATH))) {
             properties.load(configStream);
         }
         validateConfig();
@@ -92,7 +89,8 @@ public class ConfigManager {
     public void loadWeights() {
         try (InputStream weightStream = Files.newInputStream(Paths.get(WEIGHT_FILE_PATH))) {
             InputStreamReader reader = new InputStreamReader(weightStream);
-            Type listType = new TypeToken<WeightsWrapper>() {}.getType();
+            Type listType = new TypeToken<WeightsWrapper>() {
+            }.getType();
             WeightsWrapper wrapper = new Gson().fromJson(reader, listType);
             weights = wrapper.itemWeights;
             for (Weights weight : weights) {
@@ -107,11 +105,9 @@ public class ConfigManager {
     // Ensure configuration file is valid
     public void validateConfig() {
         // Required properties
-        List<String> properties = Arrays.asList("slownessMultiplier", "includeEquipped", "maxWeight", "armorWeight", "toolWeight", "defaultWeight", "actionBar", "weatherSlowdown", "weatherWeight", "netherSlowdown", "netherWeight", "breakingSpeed", "fallDamage", "fallDamageWeight", "creativeSlowdown");
-
-        for (String property : properties) {
+        for (String property : REQUIRED_PROPERTIES) {
             if (!this.properties.containsKey(property)) {
-                throw new IllegalStateException(new Weight().messagePrefix + "Configuration file is missing " + property + ".");
+                throw new IllegalStateException(Weight.messagePrefix + "Configuration file is missing " + property + ".");
             }
         }
     }
@@ -119,20 +115,20 @@ public class ConfigManager {
     // Ensure weights file is valid
     public void validateWeights() {
         if (weights == null || weights.isEmpty()) {
-            throw new IllegalStateException(new Weight().messagePrefix + "Weights configuration is empty or invalid.");
+            throw new IllegalStateException(Weight.messagePrefix + "Weights configuration is empty or invalid.");
         }
         for (Weights weight : weights) {
             if (weight.item == null || weight.item.isEmpty()) {
-                throw new IllegalStateException(new Weight().messagePrefix + "Weights configuration has an item without a name.");
+                throw new IllegalStateException(Weight.messagePrefix + "Weights configuration has an item without a name.");
             }
             if (weight.percent < 0.0) {
-                throw new IllegalStateException(new Weight().messagePrefix + "Weights configuration has an item with an invalid weight.");
+                throw new IllegalStateException(Weight.messagePrefix + "Weights configuration has an item with an invalid weight.");
             }
         }
     }
 
     // Get configuration values
-    public String getConfig(String key){
+    public String getConfig(String key) {
         return properties.getProperty(key);
     }
 

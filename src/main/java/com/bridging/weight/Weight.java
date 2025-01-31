@@ -5,7 +5,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 public class Weight implements ModInitializer {
-    public final String messagePrefix = "[Weight 1.0] ";
+    public static final String messagePrefix = "[Weight 1.0] ";
+    public static final String chatPrefix = Colors.DARK_GRAY + "[" + Colors.DARK_AQUA + "Weight" + Colors.DARK_GRAY + "] " + Colors.WHITE;
 
     // Initialize the mod
     @Override

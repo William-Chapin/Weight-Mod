@@ -19,18 +19,18 @@ public class ReloadCommand implements Command<CommandSourceStack> {
 
     // Overridden run method
     @Override
-    public int run(CommandContext<CommandSourceStack> context){
-        try{
+    public int run(CommandContext<CommandSourceStack> context) {
+        try {
             ConfigManager.getInstance().reloadConfig();
-            context.getSource().sendSuccess(() -> Component.literal(new Weight().messagePrefix + "Configuration reloaded."), true);
-        } catch (Exception e){
-            context.getSource().sendSuccess(() -> Component.literal(new Weight().messagePrefix + "Failed to reload configuration."), true);
+            context.getSource().sendSuccess(() -> Component.literal(Weight.chatPrefix + "Configuration reloaded."), true);
+        } catch (Exception e) {
+            context.getSource().sendSuccess(() -> Component.literal(Weight.chatPrefix + "Failed to reload configuration."), true);
         }
         return 1; // success
     }
 
     // Register command
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, ConfigManager configuration){
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, ConfigManager configuration) {
         dispatcher.register(Commands.literal("weightreload")
                 .requires(source -> source.hasPermission(2))
                 .executes(new ReloadCommand(configuration))

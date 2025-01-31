@@ -15,12 +15,12 @@ public class PlayerManager {
     private static final double DEFAULT_BREAKING_SPEED = 1.0;
 
     // Constructor
-    public PlayerManager(List<ServerPlayer> players){
+    public PlayerManager(List<ServerPlayer> players) {
         this.players = players;
     }
 
     // Reset attributes (speed, breaking speed, fall damage)
-    public void resetAttributes(ServerPlayer player){
+    public void resetAttributes(ServerPlayer player) {
         player.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(DEFAULT_SPEED);
         player.getAttribute(Attributes.BLOCK_BREAK_SPEED).setBaseValue(DEFAULT_BREAKING_SPEED);
         player.getAttribute(Attributes.FALL_DAMAGE_MULTIPLIER).setBaseValue(1);
@@ -28,18 +28,18 @@ public class PlayerManager {
     }
 
     // Check if weather is impacting weight
-    private boolean isWeather(ServerPlayer player){
+    private boolean isWeather(ServerPlayer player) {
         boolean weatherSlowdown = Boolean.parseBoolean(ConfigManager.getInstance().getConfig("weatherSlowdown"));
-        if (weatherSlowdown){
+        if (weatherSlowdown) {
             return player.level().isRaining() || player.level().isThundering();
         }
         return false;
     }
 
     // Check if nether is impacting weight
-    private boolean isNether(ServerPlayer player){
+    private boolean isNether(ServerPlayer player) {
         boolean netherSlowdown = Boolean.parseBoolean(ConfigManager.getInstance().getConfig("netherSlowdown"));
-        if (netherSlowdown){
+        if (netherSlowdown) {
             return player.level().dimension().location().toString().contains("minecraft:the_nether");
         }
         return false;
@@ -74,25 +74,25 @@ public class PlayerManager {
     }
 
     // Get the total weight of a player
-    private double getWeight(ServerPlayer player){
+    private double getWeight(ServerPlayer player) {
         double totalWeight = 1;
         ConfigManager configManager = ConfigManager.getInstance();
         boolean includeEquipped = Boolean.parseBoolean(configManager.getConfig("includeEquipped"));
 
         // Inventory items
-        for (ItemStack item : player.getInventory().items){
-            if (item != ItemStack.EMPTY && !item.isEmpty()){
+        for (ItemStack item : player.getInventory().items) {
+            if (item != ItemStack.EMPTY && !item.isEmpty()) {
                 totalWeight += calculateItemWeight(item, configManager);
             }
         }
 
         // Armor and offhand items
-        if (includeEquipped){
-            for (ItemStack armorItem : player.getInventory().armor){
+        if (includeEquipped) {
+            for (ItemStack armorItem : player.getInventory().armor) {
                 totalWeight += calculateItemWeight(armorItem, configManager);
             }
 
-            for (ItemStack offhandItem : player.getInventory().offhand){
+            for (ItemStack offhandItem : player.getInventory().offhand) {
                 totalWeight += calculateItemWeight(offhandItem, configManager);
             }
         }
@@ -100,14 +100,14 @@ public class PlayerManager {
         // Modify weight based on weather
         boolean weatherSlowdown = Boolean.parseBoolean(configManager.getConfig("weatherSlowdown"));
         double weatherWeight = Double.parseDouble(configManager.getConfig("weatherWeight"));
-        if (weatherSlowdown && isWeather(player)){
+        if (weatherSlowdown && isWeather(player)) {
             totalWeight += weatherWeight;
         }
 
         // Modify weight based on nether
         boolean netherSlowdown = Boolean.parseBoolean(configManager.getConfig("netherSlowdown"));
         double netherWeight = Double.parseDouble(configManager.getConfig("netherWeight"));
-        if (netherSlowdown && isNether(player)){
+        if (netherSlowdown && isNether(player)) {
             totalWeight += netherWeight;
         }
 
@@ -115,13 +115,13 @@ public class PlayerManager {
         double maxWeight = Double.parseDouble(configManager.getConfig("maxWeight"));
         double slownessMultiplier = Double.parseDouble(configManager.getConfig("slownessMultiplier"));
         totalWeight = (totalWeight - 1) * slownessMultiplier + 1;
-        if (totalWeight > maxWeight){
+        if (totalWeight > maxWeight) {
             totalWeight = maxWeight;
         }
         return totalWeight;
     }
 
-    public void updateWeights(){
+    public void updateWeights() {
         ConfigManager configManager = ConfigManager.getInstance();
         boolean creativeSlowdown = Boolean.parseBoolean(configManager.getConfig("creativeSlowdown"));
         boolean breakingSpeed = Boolean.parseBoolean(configManager.getConfig("breakingSpeed"));
@@ -129,11 +129,11 @@ public class PlayerManager {
         boolean actionBar = Boolean.parseBoolean(configManager.getConfig("actionBar"));
         double fallDamageWeight = Double.parseDouble(configManager.getConfig("fallDamageWeight"));
 
-        for (ServerPlayer player : players){
+        for (ServerPlayer player : players) {
             double weight = getWeight(player);
 
             // Prevent slowdown if player is in creative/spectator mode and configured
-            if ((player.isCreative() || player.isSpectator()) && !creativeSlowdown){
+            if ((player.isCreative() || player.isSpectator()) && !creativeSlowdown) {
                 weight = 1;
             }
 
@@ -142,7 +142,7 @@ public class PlayerManager {
             player.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
 
             // Set breaking speed
-            if (breakingSpeed){
+            if (breakingSpeed) {
                 double breakingSpeedValue = DEFAULT_BREAKING_SPEED / weight;
                 player.getAttribute(Attributes.BLOCK_BREAK_SPEED).setBaseValue(breakingSpeedValue);
             }
@@ -161,22 +161,13 @@ public class PlayerManager {
                 double percentOfSpeed = (weight - 1) * 100;
                 percentOfSpeed = Math.round(percentOfSpeed * 100.0) / 100.0;
 
-                String color = "§a"; // Green
-                if (percentOfSpeed > 25){
-                    color = "§e"; // Yellow
-                }
-                if (percentOfSpeed > 50){
-                    color = "§6"; // Orange
-                }
-                if (percentOfSpeed > 75){
-                    color = "§c"; // Red
-                }
+                String color = Colors.getColor(percentOfSpeed);
 
                 String extraInfo = "";
-                if (isWeather(player)){
+                if (isWeather(player)) {
                     extraInfo += weatherEmoji;
                 }
-                if (isNether(player)){
+                if (isNether(player)) {
                     extraInfo += netherEmoji;
                 }
 
@@ -185,10 +176,14 @@ public class PlayerManager {
                 } else {
                     ActionBarUtil.sendActionBar(player, color + "-" + percentOfSpeed + "% §fSpeed");
                 }
-
             }
 
-
+            // Send weight notifications if enabled
+            boolean chatMessages = Boolean.parseBoolean(configManager.getConfig("chatMessages"));
+            if (chatMessages && !(player.isCreative() || player.isSpectator() && !creativeSlowdown)) {
+                NotificationManager notificationManager = new NotificationManager();
+                notificationManager.sendWeightNotification(player, weight);
+            }
         }
     }
 }
