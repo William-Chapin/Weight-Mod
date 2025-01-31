@@ -155,8 +155,8 @@ public class PlayerManager {
 
             // Action bar message
             if (actionBar && !(player.isCreative() || player.isSpectator() && !creativeSlowdown)) {
-                String weatherEmoji = "§b☂";
-                String netherEmoji = "§4☄";
+                String weatherEmoji = Colors.AQUA + "☂";
+                String netherEmoji = Colors.DARK_RED + "☄";
 
                 double percentOfSpeed = (weight - 1) * 100;
                 percentOfSpeed = Math.round(percentOfSpeed * 100.0) / 100.0;
@@ -181,7 +181,7 @@ public class PlayerManager {
             // Send weight notifications if enabled
             boolean chatMessages = Boolean.parseBoolean(configManager.getConfig("chatMessages"));
             if (chatMessages && !(player.isCreative() || player.isSpectator() && !creativeSlowdown)) {
-                NotificationManager notificationManager = new NotificationManager();
+                NotificationManager notificationManager = NotificationManager.getInstance();
                 notificationManager.sendWeightNotification(player, weight);
             }
         }

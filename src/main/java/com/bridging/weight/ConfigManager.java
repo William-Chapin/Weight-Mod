@@ -60,6 +60,7 @@ public class ConfigManager {
                     throw new FileNotFoundException(Weight.messagePrefix + "Default file not found.");
                 }
                 Files.createDirectories(path.getParent());
+                assert defaultStream != null;
                 Files.copy(defaultStream, path);
                 LOGGER.info(Weight.messagePrefix + "Generated a default file.");
             }
@@ -97,7 +98,7 @@ public class ConfigManager {
                 itemWeights.put(weight.item, weight.percent);
             }
         } catch (JsonSyntaxException | IOException e) {
-            e.printStackTrace();
+            LOGGER.error(Weight.messagePrefix + "Failed to load weights configuration: " + e.getMessage() + ".");
         }
         validateWeights();
     }
