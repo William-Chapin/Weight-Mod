@@ -61,3 +61,4 @@ defaultWeight=0.0003
 ```
 ## Demonstration
 ![Demonstration](https://cloud-77lk866m6-hack-club-bot.vercel.app/00201.gif)
+Demo: https://cloud-77lk866m6-hack-club-bot.vercel.app/00201.gif | It won't embed on GitHub :(
