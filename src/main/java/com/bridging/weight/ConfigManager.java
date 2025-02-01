@@ -5,7 +5,6 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +19,7 @@ public class ConfigManager {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CONFIG_FILE_PATH = "mods/weight/configuration.properties";
     private static final String WEIGHT_FILE_PATH = "mods/weight/weights.json";
-    private static final List<String> REQUIRED_PROPERTIES = Arrays.asList("slownessMultiplier", "includeEquipped", "maxWeight", "armorWeight", "toolWeight", "defaultWeight", "actionBar", "weatherSlowdown", "weatherWeight", "netherSlowdown", "netherWeight", "breakingSpeed", "fallDamage", "fallDamageWeight", "creativeSlowdown", "chatMessages");
+    private static final List<String> REQUIRED_PROPERTIES = Arrays.asList("slownessMultiplier", "includeEquipped", "maxWeight", "armorWeight", "toolWeight", "defaultWeight", "actionBar", "weatherSlowdown", "weatherWeight", "netherSlowdown", "netherWeight", "breakingSpeed", "fallDamage", "fallDamageWeight", "creativeSlowdown", "chatMessages", "endSlowdown", "endWeight", "chatInterval");
 
     private static ConfigManager instance;
 
@@ -40,6 +39,7 @@ public class ConfigManager {
         }
     }
 
+    // Get instance
     public static ConfigManager getInstance() {
         if (instance == null) {
             instance = new ConfigManager();
@@ -47,11 +47,13 @@ public class ConfigManager {
         return instance;
     }
 
+    // Initialize configuration files
     private void initializeFiles() throws IOException {
         createFileIfNotExists(CONFIG_FILE_PATH, "assets/weight/default_configuration.properties");
         createFileIfNotExists(WEIGHT_FILE_PATH, "assets/weight/default_weight_config.json");
     }
 
+    // Creates configurations if they don't exist
     private void createFileIfNotExists(String filePath, String defaultFilePath) throws IOException {
         Path path = Paths.get(filePath);
         if (Files.notExists(path)) {
@@ -67,6 +69,7 @@ public class ConfigManager {
         }
     }
 
+    // Update configuration files
     public void reloadConfig() {
         try {
             loadConfig();
@@ -108,7 +111,8 @@ public class ConfigManager {
         // Required properties
         for (String property : REQUIRED_PROPERTIES) {
             if (!this.properties.containsKey(property)) {
-                throw new IllegalStateException(Weight.messagePrefix + "Configuration file is missing " + property + ".");
+                LOGGER.warn(Weight.messagePrefix + "Configuration is missing required property: " + property + ".");
+                throw new IllegalStateException(Weight.messagePrefix + "Configuration is missing required property: " + property + ".");
             }
         }
     }

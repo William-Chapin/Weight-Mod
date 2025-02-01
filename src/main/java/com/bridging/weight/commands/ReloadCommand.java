@@ -1,5 +1,6 @@
 package com.bridging.weight.commands;
 
+import com.bridging.weight.Colors;
 import com.bridging.weight.ConfigManager;
 import com.bridging.weight.Weight;
 import com.mojang.brigadier.Command;
@@ -22,9 +23,9 @@ public class ReloadCommand implements Command<CommandSourceStack> {
     public int run(CommandContext<CommandSourceStack> context) {
         try {
             ConfigManager.getInstance().reloadConfig();
-            context.getSource().sendSuccess(() -> Component.literal(Weight.chatPrefix + "Configuration reloaded."), true);
+            context.getSource().sendSuccess(() -> Component.literal(Weight.chatPrefix + Colors.GREEN + "Configuration reloaded."), true);
         } catch (Exception e) {
-            context.getSource().sendSuccess(() -> Component.literal(Weight.chatPrefix + "Failed to reload configuration."), true);
+            context.getSource().sendSuccess(() -> Component.literal(Weight.chatPrefix + Colors.RED + "Failed to reload configuration."), true);
         }
         return 1; // success
     }

@@ -11,12 +11,10 @@ public class Weight implements ModInitializer {
     // Initialize the mod
     @Override
     public void onInitialize() {
-        System.out.println(messagePrefix + "Mod has been initialized.");
-
+        System.out.println(messagePrefix + "Mod has been successfully initialized.");
         // Initialize the events manager
         EventsManager eventsManager = new EventsManager();
         ConfigManager configManager = ConfigManager.getInstance();
-
         // Register reload command
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             ReloadCommand.register(dispatcher, configManager);

@@ -11,19 +11,19 @@ public class EventsManager {
         initEvents();
     }
 
-    // initialize events
+    // Initialize events
     public void initEvents() {
-        // Every tick
+        // Every tick update the players weights
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             PlayerManager playerManager = new PlayerManager(server.getPlayerList().getPlayers());
             playerManager.updateWeights();
         });
-
-        // On disconnect, reset attributes
+        // On disconnect, reset attributes and also clear action bar
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
             ServerPlayer player = handler.getPlayer();
             PlayerManager playerManager = new PlayerManager(server.getPlayerList().getPlayers());
             playerManager.resetAttributes(player);
+            ActionBarUtil.clearActionBar(player);
         });
     }
 }

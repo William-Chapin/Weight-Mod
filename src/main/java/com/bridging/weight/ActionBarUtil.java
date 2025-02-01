@@ -10,4 +10,9 @@ public class ActionBarUtil {
         ClientboundSetActionBarTextPacket packet = new ClientboundSetActionBarTextPacket(text);
         player.connection.send(packet);
     }
+
+    // Clears a player's action bar
+    public static void clearActionBar(ServerPlayer player) {
+        sendActionBar(player, "");
+    }
 }
